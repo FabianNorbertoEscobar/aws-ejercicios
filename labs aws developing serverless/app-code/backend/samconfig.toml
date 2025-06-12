@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-bookmark-app"
+s3_bucket = "labstack-2b6af019-927a-45a4-858d-8c6-samserverless-fodz6z0nk9uy"
+s3_prefix = "sam-app"
+region = "us-west-2"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "StackName=\"\" APIGatewayStageName=\"dev\" LambdaDeploymentRole=\"arn:aws:iam::751774277631:role/LambdaDeploymentRole\" EventBridgeCloudWatchRole=\"arn:aws:iam::751774277631:role/EventBridgeStateMachineRole\""

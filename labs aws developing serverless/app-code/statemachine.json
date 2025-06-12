@@ -1,0 +1,131 @@
+{
+    "Comment": "Publish Rule workflow",
+    "StartAt": "CheckDuplicates",
+    "States": {
+      "CheckDuplicates": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-west-2:751774277631:function:duplicateBookmarkCheck",
+        "InputPath": "$",
+        "ResultPath": "$.extractedMetadata",
+        "Catch": [
+          {
+            "ErrorEquals": ["States.ALL"],
+            "Next": "NotifyUser"
+          }
+        ],
+        "Next": "DuplicateChoiceState"
+      },
+      "DuplicateChoiceState": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.extractedMetadata",
+            "StringEquals": "NotDuplicate",
+            "Next": "NotDuplicate"
+          },
+          {
+            "Variable": "$.extractedMetadata",
+            "StringEquals": "Duplicate",
+            "Next": "Duplicate"
+          }
+        ]
+      },
+      "NotDuplicate": {
+        "Type": "Pass",
+        "Next": "ValidateURL"
+      },
+      "Duplicate": {
+        "Type": "Pass",
+        "Next": "NotifyUser"
+      },
+      "ValidateURL": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-west-2:751774277631:function:validateURL",
+        "InputPath": "$",
+        "ResultPath": "$.extractedMetadata",
+        "Catch": [
+          {
+            "ErrorEquals": ["States.ALL"],
+            "Next": "NotifyUser"
+          }
+        ],
+        "Next": "ValidateChoiceState"
+      },
+      "ValidateChoiceState": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.extractedMetadata",
+            "StringEquals": "Valid",
+            "Next": "Valid"
+          },
+          {
+            "Variable": "$.extractedMetadata",
+            "StringEquals": "Invalid",
+            "Next": "Invalid"
+          }
+        ]
+      },
+      "Valid": {
+        "Type": "Pass",
+        "Next": "UserApprovalEmail"
+      },
+      "Invalid": {
+        "Type": "Pass",
+        "Next": "NotifyUser"
+      },
+      "UserApprovalEmail": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+        "InputPath": "$",
+        "ResultPath": "$.extractedMetadata",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:us-west-2:751774277631:function:userApprovalEmail",
+          "Payload": {
+            "ExecutionContext.$": "$$",
+            "APIGatewayEndpoint": "https://e2b2t5ylc1.execute-api.us-west-2.amazonaws.com/dev/bookmarks/approval"
+          }
+        },
+        "Next": "ManualApprovalChoiceState"
+      },
+      "ManualApprovalChoiceState": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.extractedMetadata.Status",
+            "StringEquals": "Approved",
+            "Next": "PublishApproval"
+          },
+          {
+            "Variable": "$.extractedMetadata.Status",
+            "StringEquals": "Rejected",
+            "Next": "NotifyUser"
+          }
+        ]
+      },
+      "PublishApproval": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-west-2:751774277631:function:publishApproval",
+        "InputPath": "$",
+        "ResultPath": "$.extractedMetadata",
+        "End": true
+      },
+      "NotifyUser": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sns:publish",
+        "InputPath": "$",
+        "Parameters": {
+          "TopicArn": "arn:aws:sns:us-west-2:751774277631:ContestTopic",
+          "Message.$": "$",
+          "MessageAttributes": {
+            "msg": {
+              "DataType": "String",
+              "StringValue": "additional instructions!"
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  }
+  

@@ -1,0 +1,221 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "2025-06-10T16:07:03Z",
+    "title" : "Bookmark App"
+  },
+  "host" : "r9xwggp41d.execute-api.us-west-2.amazonaws.com",
+  "basePath" : "/dev",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/bookmarks" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Bookmarks"
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "type" : "aws_proxy",
+          "httpMethod" : "POST",
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:751774277631:function:listBookmarks/invocations",
+          "passthroughBehavior" : "when_no_match"
+        }
+      },
+      "post" : {
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Bookmarks"
+            }
+          },
+          "404" : {
+            "description" : "404 response"
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "type" : "aws_proxy",
+          "httpMethod" : "POST",
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:751774277631:function:createBookmark/invocations",
+          "passthroughBehavior" : "when_no_match"
+        }
+      },
+      "options" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "type" : "mock",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'POST, GET, DELETE, PUT'",
+                "method.response.header.Access-Control-Allow-Headers" : "'*'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match"
+        }
+      }
+    },
+    "/bookmarks/{id}" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response"
+          },
+          "404" : {
+            "description" : "404 response"
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "type" : "aws_proxy",
+          "httpMethod" : "POST",
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:751774277631:function:getBookmark/invocations",
+          "passthroughBehavior" : "when_no_match"
+        }
+      },
+      "put" : {
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response"
+          },
+          "404" : {
+            "description" : "404 response"
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "type" : "aws_proxy",
+          "httpMethod" : "POST",
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:751774277631:function:updateBookmark/invocations",
+          "passthroughBehavior" : "when_no_match"
+        }
+      },
+      "delete" : {
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response"
+          },
+          "404" : {
+            "description" : "404 response"
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "type" : "aws_proxy",
+          "httpMethod" : "POST",
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:751774277631:function:deleteBookmark/invocations",
+          "passthroughBehavior" : "when_no_match"
+        }
+      },
+      "options" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "type" : "mock",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'POST, GET, DELETE, PUT'",
+                "method.response.header.Access-Control-Allow-Headers" : "'*'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match"
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Bookmarks" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
